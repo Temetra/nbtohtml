@@ -1,5 +1,9 @@
 # nbtohtml - Jupyter notebook HTML converter
 
+## About
+
+A simple external renderer for Jupyter notebook files in Gitea. Considerably faster than running `jupyter nbconvert` on a Raspberry Pi.
+
 ## Usage
 
 ```powershell
@@ -9,20 +13,29 @@ Get-Content source.ipynb | nbtohtml.exe
 
 ## Gitea installation
 
-Build
+The following assumes you are running Gitea in Docker, with the data volume mapped
+
+```yaml
+# Example path
+volumes:
+  - /media/usb0/gitea/data:/data
+```
+
+Build the binary for `linux/arm64`
 
 ```powershell
 # Powershell example
 $env:GOOS="linux"; $env:GOARCH="arm64"; go build -o output
 ```
 
-Copy binary to Gitea data volume
+Copy the binary to the Gitea data volume (`data/tools/nbtohtml`)
 
-```
+```python
+# Example path
 /media/usb0/gitea/data/tools/nbtohtml
 ```
 
-Config Gitea (`gitea\conf\app.ini`)
+Config Gitea (`data/gitea/conf/app.ini`)
 
 ```ini
 [markup.jupyter]
@@ -32,14 +45,14 @@ RENDER_COMMAND = "/data/tools/nbtohtml"
 IS_INPUT_FILE = false
 ```
 
-Generate CSS files from Pygments (in your Jupyter environment) (`gitea\public\css`)
+Generate CSS files from Pygments (in your Jupyter environment) (`data/gitea/public/css`)
 
 ```bash
 pygmentize -S staroffice -f html -a ".markup.jupyter pre" > jupyter-light.css
 pygmentize -S lightbulb -f html -a ".markup.jupyter pre" > jupyter-dark.css
 ```
 
-Wrap CSS with following code, setting `prefers-color-scheme` to `light` or `dark` as appropriate
+Wrap the CSS in each file with the following, setting `prefers-color-scheme` to `light` or `dark` as appropriate
 
 ```css
 @media (prefers-color-scheme: light) {
@@ -49,7 +62,7 @@ Wrap CSS with following code, setting `prefers-color-scheme` to `light` or `dark
 }
 ```
 
-Create custom header template (`gitea\templates\custom\header.tmpl`)
+Create a custom header template (`data/gitea/templates/custom/header.tmpl`)
 
 ```html
 <link rel="stylesheet" href="{{AppSubUrl}}/assets/css/jupyter-light.css" />
