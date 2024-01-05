@@ -43,6 +43,9 @@ ENABLED = true
 FILE_EXTENSIONS = .ipynb
 RENDER_COMMAND = "/data/tools/nbtohtml"
 IS_INPUT_FILE = false
+
+[markup.sanitizer.jupyter.img]
+ALLOW_DATA_URI_IMAGES = true
 ```
 
 Generate CSS files from Pygments (in your Jupyter environment) (`data/gitea/public/css`)

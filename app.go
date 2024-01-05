@@ -13,9 +13,20 @@ import (
 	"github.com/yuin/goldmark"
 )
 
+type NotebookOutputData struct {
+	TextHtml []string `json:"text/html"`
+}
+
+type NotebookOutput struct {
+	OutputType string `json:"output_type"`
+	Text       []string
+	Data       NotebookOutputData
+}
+
 type NotebookCell struct {
-	Cell_Type string
-	Source    []string
+	CellType string `json:"cell_type"`
+	Source   []string
+	Outputs  []NotebookOutput
 }
 
 type Notebook struct {
@@ -41,13 +52,33 @@ func main() {
 
 	// Loop through cells
 	for _, cell := range notebook1.Cells {
+		// Write source
 		src := strings.Join(cell.Source, "")
-		switch cell.Cell_Type {
+		switch cell.CellType {
 		case "markdown":
 			goldmark.Convert([]byte(src), writer)
 		case "code":
 			iterator, _ := lexer.Tokenise(nil, src)
 			formatter.Format(writer, style, iterator)
+		}
+
+		// Write outputs
+		for _, output := range cell.Outputs {
+			switch output.OutputType {
+			case "display_data":
+				for _, line := range output.Data.TextHtml {
+					// Gitea sanitizer doesn't like spaces in src attributes
+					// This is a quick and dirty way of fixing data uri images
+					line = strings.Replace(line, ";base64, ", ";base64,", 1)
+					writer.Write([]byte(line))
+				}
+			case "stream":
+				writer.Write([]byte("\n<pre>\n"))
+				for _, line := range output.Text {
+					writer.Write([]byte(line))
+				}
+				writer.Write([]byte("</pre>\n"))
+			}
 		}
 	}
 
