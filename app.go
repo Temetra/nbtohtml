@@ -78,6 +78,10 @@ func main() {
 					line = strings.Replace(line, ";base64, ", ";base64,", 1)
 					writer.Write([]byte(line))
 				}
+			case "execute_result":
+				for _, line := range output.Data.TextHtml {
+					writer.Write([]byte(line))
+				}
 			case "stream":
 				writer.Write([]byte("\n<pre>\n"))
 				for _, line := range output.Text {
