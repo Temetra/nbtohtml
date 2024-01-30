@@ -13,7 +13,7 @@ Get-Content source.ipynb | nbtohtml.exe
 
 ## Gitea installation
 
-The following assumes you are running Gitea in Docker, with the data volume mapped
+The following examples assume you are running Gitea in Docker, with the data volume mapped
 
 ```yaml
 # Example path
@@ -21,7 +21,7 @@ volumes:
   - /media/usb0/gitea/data:/data
 ```
 
-Build the binary for `linux/arm64` and copy the binary to the Gitea data volume (`data/tools/nbtohtml`)
+Build the binary for `linux/arm64` and copy it to the Gitea data volume (`data/tools/nbtohtml`)
 
 ```powershell
 # Powershell example
@@ -48,7 +48,7 @@ pygmentize -S staroffice -f html -a ".markup.jupyter pre" > jupyter-light.css
 pygmentize -S lightbulb -f html -a ".markup.jupyter pre" > jupyter-dark.css
 ```
 
-Wrap the CSS in each file with the following, setting `prefers-color-scheme` to `light` or `dark` as appropriate
+Wrap the CSS in each file with the following. Set `prefers-color-scheme` to `light` or `dark` as appropriate
 
 ```css
 @media (prefers-color-scheme: light) {
