@@ -14,6 +14,7 @@ import (
 )
 
 type NotebookOutputData struct {
+	ImgPng   string   `json:"image/png"`
 	TextHtml []string `json:"text/html"`
 }
 
@@ -66,6 +67,11 @@ func main() {
 		for _, output := range cell.Outputs {
 			switch output.OutputType {
 			case "display_data":
+				if output.Data.ImgPng != "" {
+					writer.Write([]byte("\n<img alt=\"img\" src=\"data:image/png;base64,"))
+					writer.Write([]byte(output.Data.ImgPng))
+					writer.Write([]byte("\"/>\n"))
+				}
 				for _, line := range output.Data.TextHtml {
 					// Gitea sanitizer doesn't like spaces in src attributes
 					// This is a quick and dirty way of fixing data uri images
