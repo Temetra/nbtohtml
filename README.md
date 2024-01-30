@@ -21,21 +21,14 @@ volumes:
   - /media/usb0/gitea/data:/data
 ```
 
-Build the binary for `linux/arm64`
+Build the binary for `linux/arm64` and copy the binary to the Gitea data volume (`data/tools/nbtohtml`)
 
 ```powershell
 # Powershell example
 $env:GOOS="linux"; $env:GOARCH="arm64"; go build -o output
 ```
 
-Copy the binary to the Gitea data volume (`data/tools/nbtohtml`)
-
-```python
-# Example path
-/media/usb0/gitea/data/tools/nbtohtml
-```
-
-Config Gitea (`data/gitea/conf/app.ini`)
+Configure Gitea to render `.ipynb` using the binary (`data/gitea/conf/app.ini`)
 
 ```ini
 [markup.jupyter]
@@ -48,7 +41,7 @@ IS_INPUT_FILE = false
 ALLOW_DATA_URI_IMAGES = true
 ```
 
-Generate CSS files from Pygments (in your Jupyter environment) (`data/gitea/public/assets/css`)
+In your Jupyter environment, generate CSS files from Pygments and copy to the data volume (`data/gitea/public/assets/css`)
 
 ```bash
 pygmentize -S staroffice -f html -a ".markup.jupyter pre" > jupyter-light.css
