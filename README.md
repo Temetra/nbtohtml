@@ -48,7 +48,7 @@ IS_INPUT_FILE = false
 ALLOW_DATA_URI_IMAGES = true
 ```
 
-Generate CSS files from Pygments (in your Jupyter environment) (`data/gitea/public/css`)
+Generate CSS files from Pygments (in your Jupyter environment) (`data/gitea/public/assets/css`)
 
 ```bash
 pygmentize -S staroffice -f html -a ".markup.jupyter pre" > jupyter-light.css
